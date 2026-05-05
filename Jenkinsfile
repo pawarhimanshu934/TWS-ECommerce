@@ -5,6 +5,7 @@ pipeline {
         DOCKER_IMAGE_NAME = hiimanshupawar/ecommerce-app 
         DOCKER_MIGRATION_IMAGE_NAME = hiimanshupawar/ecommerce-migration
         IMAGE_TAG = "${BUILD_NUMBER}"
+
     }
 
     stages {
@@ -49,6 +50,71 @@ pipeline {
                     }
                 }
             }
-        }     
+        }
+
+        stage("Unit-Tests"){
+            steps{
+                sh "echo 'Running Unit-Tests'"
+            }
+        }
+
+        stage("Security-Scan with Trivy"){
+            steps{
+                sh "echo 'Running Security-Scan with Trivy'"
+
+                script{
+                    echo "Running Trivy Scan for E-Commerce build image"
+
+                    trivyScan(
+                        image_name : env.DOCKER_IMAGE_NAME,
+                        image_tag : env.IMAGE_TAG
+                        severity : 'HIGH,CRITICAL'
+                    )
+
+                    echo "Running Trivy Scan for Migration build image"
+
+                    trivyScan(
+                        image_name : env.DOCKER_MIGRATION_IMAGE_NAME
+                        image_tag : env.IMAGE_TAG
+                        severity : 'HIGH,CRITICAL'
+                    )
+                }
+
+            }
+        }
+
+        stage("Push Docker Image"){
+            parallel{
+                stage("Push E-Commerce Image"){
+                    steps{
+                        script{
+                            pushDockerImage(
+                                image_name : env.DOCKER_IMAGE_NAME,
+                                image_tag : env.IMAGE_TAG
+                                credentials : 'docker-hub-credentials'
+                            )
+                        }
+                    }
+                }
+
+                stage("Push DB Migration Image"){
+                    steps{
+                        script{
+                            pushDockerImage(
+                                image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                                image_tag : env.IMAGE_TAG
+                                credentials : 'docker-hub-credentials'
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        stage("Update Kubernetes Manifests"){
+            steps{
+                sh "echo 'Kubernetes manifests are updated.....'"
+            }
+        }    
     }
 }
