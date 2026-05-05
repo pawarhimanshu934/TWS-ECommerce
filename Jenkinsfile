@@ -65,19 +65,22 @@ pipeline {
                 script{
                     echo "Running Trivy Scan for E-Commerce build image"
 
-                    trivyScan(
-                        image_name : env.DOCKER_IMAGE_NAME,
-                        image_tag : env.IMAGE_TAG
-                        severity : 'HIGH,CRITICAL'
-                    )
+                    def appVulns = trivyScan(
+                                image_name : env.DOCKER_IMAGE_NAME,
+                                image_tag : env.IMAGE_TAG
+                                severity : 'HIGH,CRITICAL'
+                                )    
+                    
+                    echo "App Vulnerabilities: ${appVulns}"
 
                     echo "Running Trivy Scan for Migration build image"
 
-                    trivyScan(
-                        image_name : env.DOCKER_MIGRATION_IMAGE_NAME
-                        image_tag : env.IMAGE_TAG
-                        severity : 'HIGH,CRITICAL'
-                    )
+                    def migrationVulns = trivyScan(
+                                    image_name : env.DOCKER_MIGRATION_IMAGE_NAME
+                                    image_tag : env.IMAGE_TAG
+                                    severity : 'HIGH,CRITICAL'
+                                    )
+                    echo "Migration Vulnerabilities: ${migrationVulns}"
                 }
 
             }
