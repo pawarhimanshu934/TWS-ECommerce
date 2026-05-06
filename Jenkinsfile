@@ -1,3 +1,5 @@
+@Library("SharedLib") _
+
 pipeline {
     agent any
 
