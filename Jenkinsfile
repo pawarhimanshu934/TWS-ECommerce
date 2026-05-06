@@ -4,8 +4,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_NAME = hiimanshupawar/ecommerce-app 
-        DOCKER_MIGRATION_IMAGE_NAME = hiimanshupawar/ecommerce-migration
+        DOCKER_IMAGE_NAME = "hiimanshupawar/ecommerce-app"
+        DOCKER_MIGRATION_IMAGE_NAME = "hiimanshupawar/ecommerce-migration"
         IMAGE_TAG = "${BUILD_NUMBER}"
         
 
@@ -70,7 +70,7 @@ pipeline {
 
                     def appVulns = trivyScan(
                                 image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG
+                                image_tag : env.IMAGE_TAG,
                                 severity : 'HIGH,CRITICAL'
                                 )    
                     
@@ -79,8 +79,8 @@ pipeline {
                     echo "Running Trivy Scan for Migration build image"
 
                     def migrationVulns = trivyScan(
-                                    image_name : env.DOCKER_MIGRATION_IMAGE_NAME
-                                    image_tag : env.IMAGE_TAG
+                                    image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                                    image_tag : env.IMAGE_TAG,
                                     severity : 'HIGH,CRITICAL'
                                     )
                     echo "Migration Vulnerabilities: ${migrationVulns}"
@@ -96,7 +96,7 @@ pipeline {
                         script{
                             pushDockerImage(
                                 image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG
+                                image_tag : env.IMAGE_TAG,
                                 credentials : 'docker-hub-credentials'
                             )
                         }
@@ -108,7 +108,7 @@ pipeline {
                         script{
                             pushDockerImage(
                                 image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG
+                                image_tag : env.IMAGE_TAG,
                                 credentials : 'docker-hub-credentials'
                             )
                         }
