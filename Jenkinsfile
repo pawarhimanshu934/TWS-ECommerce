@@ -5,6 +5,7 @@ pipeline {
         DOCKER_IMAGE_NAME = hiimanshupawar/ecommerce-app 
         DOCKER_MIGRATION_IMAGE_NAME = hiimanshupawar/ecommerce-migration
         IMAGE_TAG = "${BUILD_NUMBER}"
+        
 
     }
 
