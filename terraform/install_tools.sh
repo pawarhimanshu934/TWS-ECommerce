@@ -34,6 +34,7 @@ sudo apt-get install -y docker-compose-v2
 
 #Add user to docker group
 sudo usermod -aG docker $USER
+sudo usermod -aG docker jenkins
 
 #Refresh group membership
 newgrp docker
