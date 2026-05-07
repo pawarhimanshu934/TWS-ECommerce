@@ -123,4 +123,13 @@ pipeline {
             }
         }    
     }
+
+    post {
+        always {
+            cleanWs()
+
+            sh 'docker system prune -af || true'
+            sh 'docker builder prune -af || true'
+        }
+    }
 }
