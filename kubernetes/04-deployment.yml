@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ecommerce-deployment
+  namespace: ecommerce-ns
+  labels:
+    app: ecommerce
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ecommerce
+
+  template:
+    metadata:
+      labels:
+        app: ecommerce 
+    
+    spec:
+      containers:
+      - name: ecommerce-container
+        image: hiimanshupawar/ecommerce-app:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: ecommerce-configmap
+        - secretRef:
+            name: ecommerce-secret

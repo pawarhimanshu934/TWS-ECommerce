@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ecommerce-service
+  namespace: ecommerce-ns
+  
+spec:
+  selector:
+    app: ecommerce
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
