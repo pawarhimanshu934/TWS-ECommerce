@@ -89,34 +89,40 @@ pipeline {
             }
         }
 
-        stage("Push Docker Image"){
-            parallel{
-                stage("Push E-Commerce Image"){
-                    steps{
-                        script{
-                            pushDockerImage(
-                                image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                credentials : 'docker-hub-credentials'
-                            )
-                        }
-                    }
+        
+        stage("Push E-Commerce Image"){
+            steps{
+                
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    passwordVariable: 'DOCKER_PASSWORD',
+                    usernameVariable: 'DOCKER_USERNAME'
+                )]) {
+
+                sh """
+                echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin
+                """
                 }
 
-                stage("Push DB Migration Image"){
-                    steps{
-                        script{
-                            pushDockerImage(
-                                image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                credentials : 'docker-hub-credentials'
-                            )
-                        }
-                    }
+                script{
+                    pushDockerImage(
+                        image_name : env.DOCKER_IMAGE_NAME,
+                        image_tag : env.IMAGE_TAG,
+                    )
+                }
+        }
+
+        stage("Push DB Migration Image"){
+            steps{
+                script{
+                    pushDockerImage(
+                        image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                        image_tag : env.IMAGE_TAG,
+                    )
                 }
             }
         }
-
+            
         stage("Update Kubernetes Manifests"){
             steps{
                 sh "echo 'Kubernetes manifests are updated.....'"
