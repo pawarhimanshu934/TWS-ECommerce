@@ -1,0 +1,21 @@
+kind: Job
+apiVersion: batch/v1
+
+metadata:
+  name: data-migration-job
+  namespace: easyshop-ns
+
+spec:
+  template:
+    spec:
+      containers:
+      - name: migration-job
+        image: hiimanshupawar/easyshop-migration:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGODB_URI
+          valueFrom:
+            configMapKeyRef:
+              name: easyshop-configmap
+              key: MONGODB_URI
+      restartPolicy: OnFailure 

@@ -1,10 +1,18 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: ecommerce-configmap
-  namespace: ecommerce-ns
+  name: easyshop-configmap
+  namespace: easyshop-ns
 
 data:
-  MONGODB_URI : mongodb://easyshop-mongodb:27017/easyshop # Database Configuration
-  NEXTAUTH_URL : http://54.166.246.143:3000 # Replace with your EC2 instance's public IP or put localhost:3000
-  NEXT_PUBLIC_API_URL : http://54.166.246.143:3000/api # Replace with your EC2 instance's public IP or put localhost:3000/api
+  MONGODB_URI : mongodb://mongodb-service:27017/easyshop # Database Configuration
+  NEXTAUTH_URL : http://54.236.2.11:3000 # Replace with your EC2 instance's public IP or put localhost:3000
+  NEXT_PUBLIC_API_URL : http://54.236.2.11:3000/api # Replace with your EC2 instance's public IP or put localhost:3000/api
+
+
+
+
+#MONGODB_URI is very important to change. It is the connection string to your MongoDB.
+#When testing your application locally using docker compose, the MONGODB_URI should include the name of the mongo service as the host, for example: mongodb://mongodb-service:27017/easyshop
+
+#When deploying your application to a Kubernetes cluster, the MONGODB_URI should include the name of the mongo service as the host which you have defined in stateful set yaml file, for example: mongodb://mongodb-service:27017/easyshop
