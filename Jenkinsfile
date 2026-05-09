@@ -107,9 +107,10 @@ pipeline {
                 script{
                     pushDockerImage(
                         image_name : env.DOCKER_IMAGE_NAME,
-                        image_tag : env.IMAGE_TAG,
+                        image_tag : env.IMAGE_TAG
                     )
                 }
+            }
         }
 
         stage("Push DB Migration Image"){
@@ -117,7 +118,7 @@ pipeline {
                 script{
                     pushDockerImage(
                         image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                        image_tag : env.IMAGE_TAG,
+                        image_tag : env.IMAGE_TAG
                     )
                 }
             }
@@ -140,4 +141,3 @@ pipeline {
     }
 }
 
-}
