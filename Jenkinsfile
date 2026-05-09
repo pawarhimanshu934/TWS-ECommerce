@@ -90,29 +90,19 @@ pipeline {
         }
 
         stage("Push Docker Image"){
-            parallel{
-                stage("Push E-Commerce Image"){
-                    steps{
-                        script{
-                            pushDockerImage(
-                                image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                credentials : 'docker-hub-credentials'
-                            )
-                        }
-                    }
-                }
-
-                stage("Push DB Migration Image"){
-                    steps{
-                        script{
-                            pushDockerImage(
-                                image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                credentials : 'docker-hub-credentials'
-                            )
-                        }
-                    }
+            steps{
+                script{
+                    pushDockerImage(
+                        image_name : env.DOCKER_IMAGE_NAME,
+                        image_tag : env.IMAGE_TAG,
+                        credentials : 'docker-hub-credentials'
+                    )
+                    
+                    pushDockerImage(
+                        image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                        image_tag : env.IMAGE_TAG,
+                        credentials : 'docker-hub-credentials'
+                    )
                 }
             }
         }
