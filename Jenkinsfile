@@ -110,6 +110,14 @@ pipeline {
         stage("Update Kubernetes Manifests"){
             steps{
                 sh "echo 'Kubernetes manifests are updated.....'"
+                script{
+                    updateK8sManifests(
+                        app_image : "${env.DOCKER_IMAGE_NAME}",
+                        migration_image : "${env.DOCKER_MIGRATION_IMAGE_NAME}",
+                        image_tag : "${env.IMAGE_TAG}",
+                        manifest_dir : "kubernetes",
+                    )
+                }
             }
         }    
     }
