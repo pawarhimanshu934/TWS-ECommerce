@@ -67,3 +67,71 @@ Step 6:
 ✅ Expected success
 Hi pawarhimanshu934! You've successfully authenticated
 
+
+
+
+
+🚀 Step 7: Configure repo to use SSH
+
+In server/server where your project files are present :
+
+git remote set-url origin git@github.com:pawarhimanshu934/TWS-ECommerce.git
+
+Check:
+
+git remote -v
+
+Should show:
+
+git@github.com:... ✅
+
+
+🚀 Step 8: Add SSH key to Jenkins credentials
+
+In Jenkins UI:
+
+Go to Manage Jenkins → Credentials
+Add new credential:
+Kind: SSH Username with private key
+ID: github-ssh
+Username: git
+Private Key: Paste contents of ~/.ssh/id_ed25519
+
+
+🚀 Step 9: Update your Jenkins pipeline
+
+Replace gitUsernamePassword with:
+
+withCredentials([sshUserPrivateKey(
+    credentialsId: 'github-ssh',
+    keyFileVariable: 'SSH_KEY'
+)]) {
+
+    sh """
+    eval \$(ssh-agent -s)
+    ssh-add \$SSH_KEY
+
+    git config user.name "Jenkins"
+    git config user.email "jenkins@example.com"
+
+
+🚀 Step 8: Handle first-time host verification (IMPORTANT)
+
+First time GitHub connects, it may ask:
+
+Are you sure you want to continue connecting (yes/no)?
+
+👉 Fix it by running once on server:
+
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+
+
+Final architecture
+Jenkins
+  ↓ (SSH key)
+GitHub Repo
+  ↓
+Push manifests
+  ↓
+(Next: ArgoCD will auto-deploy)
