@@ -31,6 +31,7 @@ pipeline {
                 stage("App-build"){
                     steps{
                         script{
+                            echo "Skipping App build for K8 manifest testing"
                             buildDockerImage( 
                                 image_name : env.DOCKER_IMAGE_NAME,
                                 image_tag : env.IMAGE_TAG,
@@ -43,6 +44,7 @@ pipeline {
                 stage("DB-migration"){
                     steps{
                         script{
+                            echo "Skipping Migration build for K8 manifest testing"
                             buildDockerImage(
                                 image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
                                 image_tag : env.IMAGE_TAG,
@@ -63,7 +65,7 @@ pipeline {
 
         stage("Security-Scan with Trivy"){
             steps{
-                sh "echo 'Running Security-Scan with Trivy'"
+                echo 'Running Security-Scan with Trivy'
 
                 script{
                     echo "Running Trivy Scan for E-Commerce build image"
@@ -92,6 +94,7 @@ pipeline {
         stage("Push Docker Image"){
             steps{
                 script{
+                    echo "Skipping Image push for K8 manifest testing"
                     pushDockerImage(
                         image_name : env.DOCKER_IMAGE_NAME,
                         image_tag : env.IMAGE_TAG,
