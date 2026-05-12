@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: easyshop-container
-        image: hiimanshupawar/easyshop:33
+        image: hiimanshupawar/easyshop:34
         ports:
         - containerPort: 3000
         envFrom:

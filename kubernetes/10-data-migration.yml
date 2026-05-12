@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: migration-job
-        image: hiimanshupawar/easyshop-migration:33
+        image: hiimanshupawar/easyshop-migration:34
         imagePullPolicy: Always
         env:
         - name: MONGODB_URI
