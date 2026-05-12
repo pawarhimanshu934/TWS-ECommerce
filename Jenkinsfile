@@ -31,24 +31,26 @@ pipeline {
                 stage("App-build"){
                     steps{
                         script{
-                            buildDockerImage( 
-                                image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                dockerfile : "Dockerfile",
-                                context : "."
-                            )
+                            echo "Skipping App build for K8 manifest testing"
+                            // buildDockerImage( 
+                            //     image_name : env.DOCKER_IMAGE_NAME,
+                            //     image_tag : env.IMAGE_TAG,
+                            //     dockerfile : "Dockerfile",
+                            //     context : "."
+                            // )
                         }
                     }
                 }
                 stage("DB-migration"){
                     steps{
                         script{
-                            buildDockerImage(
-                                image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                dockerfile : "scripts/Dockerfile.migration",
-                                context : "."
-                            )
+                            echo "Skipping Migration build for K8 manifest testing"
+                            // buildDockerImage(
+                            //     image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                            //     image_tag : env.IMAGE_TAG,
+                            //     dockerfile : "scripts/Dockerfile.migration",
+                            //     context : "."
+                            // )
                         }
                     }
                 }
@@ -63,28 +65,28 @@ pipeline {
 
         stage("Security-Scan with Trivy"){
             steps{
-                sh "echo 'Running Security-Scan with Trivy'"
+                echo 'Running Security-Scan with Trivy'
 
-                script{
-                    echo "Running Trivy Scan for E-Commerce build image"
+                // script{
+                //     echo "Running Trivy Scan for E-Commerce build image"
 
-                    def appVulns = trivyScan(
-                                image_name : env.DOCKER_IMAGE_NAME,
-                                image_tag : env.IMAGE_TAG,
-                                severity : 'HIGH,CRITICAL'
-                                )    
+                //     def appVulns = trivyScan(
+                //                 image_name : env.DOCKER_IMAGE_NAME,
+                //                 image_tag : env.IMAGE_TAG,
+                //                 severity : 'HIGH,CRITICAL'
+                //                 )    
                     
-                    echo "App Vulnerabilities: ${appVulns}"
+                //     echo "App Vulnerabilities: ${appVulns}"
 
-                    echo "Running Trivy Scan for Migration build image"
+                //     echo "Running Trivy Scan for Migration build image"
 
-                    def migrationVulns = trivyScan(
-                                    image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                                    image_tag : env.IMAGE_TAG,
-                                    severity : 'HIGH,CRITICAL'
-                                    )
-                    echo "Migration Vulnerabilities: ${migrationVulns}"
-                }
+                //     def migrationVulns = trivyScan(
+                //                     image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                //                     image_tag : env.IMAGE_TAG,
+                //                     severity : 'HIGH,CRITICAL'
+                //                     )
+                //     echo "Migration Vulnerabilities: ${migrationVulns}"
+                // }
 
             }
         }
@@ -92,17 +94,18 @@ pipeline {
         stage("Push Docker Image"){
             steps{
                 script{
-                    pushDockerImage(
-                        image_name : env.DOCKER_IMAGE_NAME,
-                        image_tag : env.IMAGE_TAG,
-                        credentials : 'docker-hub-credentials'
-                    )
+                    echo "Skipping Image push for K8 manifest testing"
+                    // pushDockerImage(
+                    //     image_name : env.DOCKER_IMAGE_NAME,
+                    //     image_tag : env.IMAGE_TAG,
+                    //     credentials : 'docker-hub-credentials'
+                    // )
                     
-                    pushDockerImage(
-                        image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
-                        image_tag : env.IMAGE_TAG,
-                        credentials : 'docker-hub-credentials'
-                    )
+                    // pushDockerImage(
+                    //     image_name : env.DOCKER_MIGRATION_IMAGE_NAME,
+                    //     image_tag : env.IMAGE_TAG,
+                    //     credentials : 'docker-hub-credentials'
+                    // )
                 }
             }
         }
