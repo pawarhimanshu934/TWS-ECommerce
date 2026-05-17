@@ -6,8 +6,8 @@ metadata:
 
 data:
   MONGODB_URI : mongodb://mongodb-service:27017/easyshop # Database Configuration
-  NEXTAUTH_URL : http://54.236.2.11:3000 # Replace with your EC2 instance's public IP or put localhost:3000
-  NEXT_PUBLIC_API_URL : http://54.236.2.11:3000/api # Replace with your EC2 instance's public IP or put localhost:3000/api
+  NEXTAUTH_URL : http://a589ecc49c0884d14b339a88d7ce3ece-1729362524.us-east-1.elb.amazonaws.com
+  NEXT_PUBLIC_API_URL : http://a589ecc49c0884d14b339a88d7ce3ece-1729362524.us-east-1.elb.amazonaws.com/api
 
 
 

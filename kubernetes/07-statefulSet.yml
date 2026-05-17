@@ -42,7 +42,16 @@ spec:
       name: mongodb-vol
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: standard
+      storageClassName: gp2  # use 'gp2' storage class for AWS EKS, if using Kind cluster, you can use 'standard' storage class
       resources:
         requests:
           storage: 5Gi
+
+
+
+#when using EKS cluster for your project, ensure you have installed the required csi driver for AWS EBS storage provider. You can install it using the following command:
+
+# 1) kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-ebs-csi-driver/v1.28.0/deploy/kubernetes/overlays/stable/rbac-full.yaml
+# 2) You can also use the AWS Console to install the EBS CSI driver
+
+#your pvc won't be bounded to pv until the csi driver is installed. it will be in pending state.
