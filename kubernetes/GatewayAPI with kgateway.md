@@ -37,7 +37,7 @@ NAME                        READY   STATUS    RESTARTS   AGE
 kgateway-5495d98459-46dpk   1/1     Running   0          19s
 
 
-Cleanup 
+5) Cleanup 
 
 No longer need kgateway? Uninstall with the following command:
 

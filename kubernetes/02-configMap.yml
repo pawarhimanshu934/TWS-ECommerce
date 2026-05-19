@@ -16,3 +16,6 @@ data:
 #When testing your application locally using docker compose, the MONGODB_URI should include the name of the mongo service as the host, for example: mongodb://mongodb-service:27017/easyshop
 
 #When deploying your application to a Kubernetes cluster, the MONGODB_URI should include the name of the mongo service as the host which you have defined in stateful set yaml file, for example: mongodb://mongodb-service:27017/easyshop
+
+
+#change your nextauth url and next public api url to the load balancer url of your kubernetes cluster (easyshop-service). You can find the load balancer url by running the command: kubectl get services -n easyshop-ns
