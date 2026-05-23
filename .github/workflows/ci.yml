@@ -26,8 +26,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${ vars.DOCKER_USERNAME }/easyshop:${ github.sha }
-            ${ vars.DOCKER_USERNAME }/easyshop:latest
+            ${{ vars.DOCKER_USERNAME }}/easyshop:${{ github.sha }}
+            ${{ vars.DOCKER_USERNAME }}/easyshop:latest
 
       - name: Build and Push Data Migration Docker Image
         uses: docker/build-push-action@v7
@@ -35,5 +35,5 @@ jobs:
           context: ./scripts/Dockerfile.migration
           push: true
           tags: |
-            ${ vars.DOCKER_USERNAME }/data-migration:${ github.sha }
-            ${ vars.DOCKER_USERNAME }/data-migration:latest
+            ${{ vars.DOCKER_USERNAME }}/data-migration:${{ github.sha }}
+            ${{ vars.DOCKER_USERNAME }}/data-migration:latest
