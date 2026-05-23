@@ -32,7 +32,8 @@ jobs:
       - name: Build and Push Data Migration Docker Image
         uses: docker/build-push-action@v7
         with:
-          context: ./scripts/Dockerfile.migration
+          context: .
+          file: ./scripts/Dockerfile.migration
           push: true
           tags: |
             ${{ vars.DOCKER_USERNAME }}/data-migration:${{ github.sha }}
