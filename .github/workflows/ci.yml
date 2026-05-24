@@ -62,7 +62,7 @@ jobs:
 
       - name: Update k8s Manifests 
         run: |
-          echo "Updating Image name tags in K8 manifests - deployement and data migration (if exists)"
+          echo "Updating Image name tags in K8 manifests - deployement & data migration (if exists)"
 
           sed -i "s|image: .*easyshop:.*|image: $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$IMAGE_TAG|g" kubernetes/04-deployment.yml
   
