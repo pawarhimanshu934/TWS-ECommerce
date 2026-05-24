@@ -4,6 +4,9 @@ apiVersion: batch/v1
 metadata:
   name: data-migration-job
   namespace: easyshop-ns
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 
 spec:
   template:
