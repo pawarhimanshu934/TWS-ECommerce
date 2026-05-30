@@ -1,114 +1,151 @@
-#JENKINS CONFIGURATION FOR THIS PROJECT
+# JENKINS CONFIGURATION FOR THIS PROJECT
 
-1) Install Jenkins and docker on Jenkins Server --> Switch to Jenkins user
-2) Install Suggest plugin on Jenkins Console.
-3) Go to Setting -> Credentials -> Global Credentails -> "Username with Password" -> Add Docker username and token via .
-   You can get username and token from DockerHub.
-4) Go to Setting -> Crendentials -> Global Credentails -> "SSH Username with Private key" -> Add github id(github-ssh) and username (git)
-   Enter the private key you generated on Jenkins Server.
-5) Go to Setting -> System -> Add Shared Library 
-   Name : SharedLib
-   Default version : main ( branch )
-   Retrival Method : Modern SCM -> give Git URL of your shared libraray on github
-6) Install Stage View Plugin.
+## Initial Setup
 
+1. Install Jenkins and Docker on Jenkins Server → Switch to Jenkins user
+2. Install Suggest plugin on Jenkins Console
+3. Go to Settings → Credentials → Global Credentials → "Username with Password" → Add Docker username and token
+   - Get username and token from DockerHub
+4. Go to Settings → Credentials → Global Credentials → "SSH Username with Private Key" → Add GitHub ID (github-ssh) with username (git)
+   - Enter the private key you generated on Jenkins Server
+5. Go to Settings → System → Add Shared Library
+   - Name: `SharedLib`
+   - Default version: `main` (branch)
+   - Retrieval Method: Modern SCM → give Git URL of your shared library on GitHub
+6. Install Stage View Plugin
+7. Generate SSH keys on Jenkins Server: `ssh-keygen` (ensure keys are in `~/.ssh`)
 
-7) Go to ~/.ssh on Jenkins Server and Generate SSH keys using "ssh-keygen"
+---
 
-8) Jenkins Authentication with Git: This is used when you're pushing code to GitHub from Jenkins Server
+## Jenkins Authentication with Git
 
-Better long-term: Use SSH, This is what most DevOps teams use
+### Why SSH?
 
 This is the real DevOps way 🔥
-Let’s set up SSH authentication between Jenkins and GitHub step by step.
 
+Better long-term: Use SSH. This is what most DevOps teams use.
 
-What we’re doing
+**Benefits:**
+- ✅ No passwords
+- ✅ No tokens
+- ✅ Stable for CI/CD
+
+**What we're doing:**
+```
 Jenkins Server → SSH Key → GitHub → Push Code Securely
+```
 
-👉 No passwords
-👉 No tokens
-👉 Stable for CI/CD
+---
 
-🚀 Step 1: Generate SSH key on Jenkins server, ensure these keys are generated on ~/.ssh 
+## Step-by-Step SSH Setup Between Jenkins and GitHub
 
-        SSH into your Jenkins machine and run:
+### Step 1: Generate SSH Key on Jenkins Server
 
-        ssh-keygen -> give file name - "jenkins"
+Ensure these keys are generated on `~/.ssh`
 
-🚀 Step 2: Copy public key
-        
-        cat ~/.ssh/jenkins.pub
+SSH into your Jenkins machine and run:
 
+```bash
+ssh-keygen
+# Give file name: jenkins
+```
 
-🚀 Step 3: Add key to GitHub
+### Step 2: Copy Public Key
 
-        Go to your project repo setting -> Deploy Keys
+```bash
+cat ~/.ssh/jenkins.pub
+```
 
+### Step 3: Add Key to GitHub
 
-🚀 Step 4: Add key to SSH agent ( Jenkins Server )
-        eval "$(ssh-agent -s)"
-        ssh-add ~/.ssh/jenkins
+Go to your project repo settings → Deploy Keys and paste the public key content.
 
-🚀 Step 5:
-        ssh -T git@github.com
+### Step 4: Add Key to SSH Agent (Jenkins Server)
 
-        ✅ Expected success
-        Hi pawarhimanshu934! You've successfully authenticated
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/jenkins
+```
 
-🚀 Step 6: Configure repo to use SSH
+### Step 5: Test SSH Connection
 
-        In server/server where your project files are present :
-        git remote set-url origin git@github.com:pawarhimanshu934/TWS-ECommerce.git
+```bash
+ssh -T git@github.com
+```
 
-        Check:
-        git remote -v
+**Expected success:**
+```
+Hi pawarhimanshu934! You've successfully authenticated
+```
 
-        Should show:
-        git@github.com:... ✅
+### Step 6: Configure Repository to Use SSH
 
-🚀 Step 7: Add SSH Private key to Jenkins credentials
+In the server where your project files are present:
 
-        In Jenkins UI:
+```bash
+git remote set-url origin git@github.com:pawarhimanshu934/TWS-ECommerce.git
+```
 
-        Go to Manage Jenkins → Credentials
-        Add new credential:
-        Kind: SSH Username with private key
-        ID: github-ssh
-        Username: git
-        Private Key: Paste contents of ~/.ssh/jenkins
+Verify the configuration:
 
+```bash
+git remote -v
+```
 
-🚀 Step 8: Update your Jenkins pipeline
+Should show:
+```
+git@github.com:... ✅
+```
 
-        Replace gitUsernamePassword with:
+### Step 7: Add SSH Private Key to Jenkins Credentials
 
+In Jenkins UI:
+
+1. Go to Manage Jenkins → Credentials
+2. Add new credential:
+   - **Kind:** SSH Username with private key
+   - **ID:** `github-ssh`
+   - **Username:** `git`
+   - **Private Key:** Paste contents of `~/.ssh/jenkins`
+
+### Step 8: Update Your Jenkins Pipeline
+
+Replace `gitUsernamePassword` with:
+
+```groovy
 withCredentials([sshUserPrivateKey(
     credentialsId: 'github-ssh',
     keyFileVariable: 'SSH_KEY'
 )]) {
-
     sh """
-    eval \$(ssh-agent -s)
-    ssh-add \$SSH_KEY
+        eval \$(ssh-agent -s)
+        ssh-add \$SSH_KEY
 
-    git config user.name "Jenkins"
-    git config user.email "jenkins@example.com"
+        git config user.name "Jenkins"
+        git config user.email "jenkins@example.com"
+    """
+}
+```
 
-
-🚀 Step 9: Handle first-time host verification (IMPORTANT)
+### Step 9: Handle First-Time Host Verification (IMPORTANT)
 
 First time GitHub connects, it may ask:
 
+```
 Are you sure you want to continue connecting (yes/no)?
+```
 
-👉 Fix it by running once on server:
+Fix it by running once on server:
 
+```bash
 ssh-keyscan github.com >> ~/.ssh/known_hosts
+```
 
+---
 
+## Final Architecture
 
-Final architecture
+```
 Jenkins
   ↓ (SSH key)
 GitHub Repo
@@ -116,3 +153,4 @@ GitHub Repo
 Push manifests
   ↓
 (Next: ArgoCD will auto-deploy)
+```
