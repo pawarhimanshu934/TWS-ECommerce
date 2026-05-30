@@ -1,44 +1,66 @@
-Get started with kgateway 
+# Getting Started with kgateway
 
-1) API GATEWAY, replacement of ingress
-2) We're using kgateway as gatway controller
+**API GATEWAY** - Replacement of Ingress  
+**Gateway Controller:** kgateway
 
-Before you begin 
-These quick start steps assume that you have a Kubernetes cluster, kubectl, and helm already set up. For quick testing, you can use Kind.
+## Before You Begin
 
-Install 
+These quick start steps assume that you have:
+- Kubernetes cluster
+- kubectl
+- helm
 
-1) Deploy the Kubernetes Gateway API CRDs.
+For quick testing, you can use Kind.
 
+## Installation Steps
+
+### 1. Deploy the Kubernetes Gateway API CRDs
+
+```bash
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml
+```
 
-2) Deploy the kgateway CRDs by using Helm.
+### 2. Deploy the kgateway CRDs using Helm
 
+```bash
 helm upgrade -i kgateway-crds oci://cr.kgateway.dev/kgateway-dev/charts/kgateway-crds \
---create-namespace --namespace kgateway-system \
---version v2.3.0-main \
---set controller.image.pullPolicy=Always
+  --create-namespace \
+  --namespace kgateway-system \
+  --version v2.3.0-main \
+  --set controller.image.pullPolicy=Always
+```
 
-3) Install kgateway by using Helm. To use experimental Gateway API features, include the experimental feature gate, --set controller.extraEnv.KGW_ENABLE_GATEWAY_API_EXPERIMENTAL_FEATURES=true.
+### 3. Install kgateway using Helm
 
+To use experimental Gateway API features, include the experimental feature gate:
+
+```bash
 helm upgrade -i kgateway oci://cr.kgateway.dev/kgateway-dev/charts/kgateway \
---namespace kgateway-system \
---version v2.3.0-main \
---set controller.image.pullPolicy=Always \
---set controller.extraEnv.KGW_ENABLE_GATEWAY_API_EXPERIMENTAL_FEATURES=true
+  --namespace kgateway-system \
+  --version v2.3.0-main \
+  --set controller.image.pullPolicy=Always \
+  --set controller.extraEnv.KGW_ENABLE_GATEWAY_API_EXPERIMENTAL_FEATURES=true
+```
 
-4) Make sure that the kgateway control plane is running.
+### 4. Verify kgateway Control Plane
 
+Make sure that the kgateway control plane is running:
+
+```bash
 kubectl get pods -n kgateway-system
+```
 
-Example output:
+**Example output:**
 
+```
 NAME                        READY   STATUS    RESTARTS   AGE
 kgateway-5495d98459-46dpk   1/1     Running   0          19s
+```
 
-
-5) Cleanup 
+## Cleanup
 
 No longer need kgateway? Uninstall with the following command:
 
+```bash
 helm uninstall kgateway -n kgateway-system
+```
